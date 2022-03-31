@@ -10,7 +10,7 @@ var options = {
     y: "Y Axis"
   },
   labelNames: [],
-  tickInterval: "5px",
+  tickInterval: 10,
   title: {
     name: "My Chart",
     fontSize: 11,
