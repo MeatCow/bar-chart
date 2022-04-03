@@ -2,8 +2,11 @@
   "name": "stretch-project-1",
   "version": "0.0.0",
   "description": "",
+  "private": true,
   "devDependencies": {
     "eslint": "^3.19.0",
-    "eslint-config-lighthouselabs": "lighthouse-labs/eslint-config-lighthouselabs"
+    "eslint-config-lighthouselabs": "lighthouse-labs/eslint-config-lighthouselabs",
+    "webpack": "^5.71.0",
+    "webpack-cli": "^4.9.2"
   }
 }
