@@ -19,7 +19,7 @@ function importJQuery() {
   jQuery.crossOrigin = "anonymous";
   jQuery.type = "text/javascript";
 
-  document.getElementsByTagName("HEAD")[0].prepend(jQuery);
+  document.getElementsByTagName("HEAD")[0].appendChild(jQuery);
 }
 
 /**
@@ -35,9 +35,12 @@ function createChart(data, options) {
   for (const value of data) {
     const newBar = document.createElement("div");
     newBar.className = "bar";
-    newBar.setAttribute("a", value);
-    newBar.textContent = value;
 
+    const textBox = document.createElement("div");
+    textBox.className = "label";
+    textBox.textContent = value;
+
+    newBar.appendChild(textBox);
     outterDiv.insertAdjacentElement("beforeend", newBar);
   }
 
@@ -50,7 +53,7 @@ function createChart(data, options) {
  * @param {Options} options
  * @returns
  */
-function generateCSS(chartDiv, options) {
+function generateCSS(data, chartDiv, options) {
   let chartCSS = document.createElement("style");
 
   chartCSS.innerHTML += `
@@ -61,20 +64,27 @@ function generateCSS(chartDiv, options) {
     border-left: 3px solid;
     border-bottom: 3px solid;
     border-color: #2196F3;
-    position: relative;
+    display: flex;
+    flex-direction: row;
   }
   #${chartDiv.id} > .bar {
-    width: calc(${options.width}/5);
+    width: calc(${options.width}/${data.length});
     background: ${options.barColour};
-    position: absolute;
-    bottom:0;
-    color: white;
     text-align: ${options.valuePosition};
+    border: 1px solid;
+    align-self: flex-end;
+    display: flex;
+    align-items: ${options.valuePosition};
+  }
+  #${chartDiv.id} > .bar > .label {
+    all: unset;
+    color: white;
+    flex: auto;
   }
   `;
 
   for (const [i, bar] of chartDiv.querySelectorAll(".bar").entries()) {
-    bar.style = `height: ${bar.getAttribute("a")}em; left: calc(calc(${options.width}/5) * ${i})`;
+    bar.style = `height: ${bar.firstChild.textContent}em;`;
   }
 
   return chartCSS;
@@ -90,13 +100,12 @@ export function drawBarChart(data, options, element) {
   if (!window.jQuery) {
     importJQuery();
   }
+  window.onload = () => {
+    let defaultOptions = new Options(options);
 
-  let defaultOptions = new Options(options);
+    let chartHTML = createChart(data, defaultOptions);
+    jQuery("head").append(generateCSS(data, chartHTML, defaultOptions));
 
-  let chartHTML = createChart(data, defaultOptions);
-  document.getElementsByTagName("HEAD")[0].appendChild(generateCSS(chartHTML, defaultOptions));
-
-  element.insertAdjacentElement("beforeend", chartHTML);
-
-
+    element.insertAdjacentElement("beforeend", chartHTML);
+  };
 }
