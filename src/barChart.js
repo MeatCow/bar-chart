@@ -62,7 +62,7 @@ function generateCSS(data, containerDiv, options) {
   const chartCSS = document.createElement("style");
   const id = containerDiv.id;
 
-  chartCSS.innerHTML += `
+  chartCSS.innerHTML = `
   #${id} > .table {
     width: ${options.width};
     height: ${options.height};
@@ -74,7 +74,7 @@ function generateCSS(data, containerDiv, options) {
     flex-direction: row;
   }
   #${id} > .table > .bar {
-    width: calc(${options.width}/${data.length});
+    width: ${options.barWidth};
     background: ${options.barColour};
     text-align: ${options.valuePosition};
     border: 1px solid;
@@ -97,8 +97,12 @@ function generateCSS(data, containerDiv, options) {
   }
   `;
 
+  let maxVal = Math.max(...[...containerDiv.querySelectorAll(".bar")].map(value => {
+    return value.firstChild.textContent;
+  }));
+
   for (const [i, bar] of containerDiv.querySelectorAll(".bar").entries()) {
-    bar.style = `height: ${bar.firstChild.textContent}em;`;
+    bar.style = `height: ${bar.firstChild.textContent / maxVal * 100}%;`;
   }
 
   return chartCSS;
@@ -106,7 +110,7 @@ function generateCSS(data, containerDiv, options) {
 
 /**
  * Render a bar chart horizontally, into the element passed as a parameter, using values from data, and height/width from options.
- * @param {number[]} data
+ * @param {number[] | Object} data
  * @param {Objet} options
  * @param {Element} element
  */

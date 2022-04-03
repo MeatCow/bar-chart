@@ -4,14 +4,11 @@ export default class Options {
     this.height = "100px";
     this.valuePosition = "center";
     this.barColour = "blue";
+    this.barWidth = "40px";
     this.labelColour = "white";
     this.barSpacing = "5px";
-    this.chartAxes = {
-      x: "X Axis",
-      y: "Y Axis"
-    };
-    this.labelNames = [];
-    this.tickInterval = 10;
+    this.labelNames = ["val1", "val2", "val3", "val4", "val5"];
+    this.tickInterval = 5;
     this.title = {
       name: "My Chart",
       fontSize: 11,
