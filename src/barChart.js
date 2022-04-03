@@ -1,22 +1,4 @@
-var defaultOptions = {
-  width: "250px",
-  height: "100px",
-  valuePosition: "center",
-  barColour: "blue",
-  labelColour: "white",
-  barSpacing: "5px",
-  chartAxes: {
-    x: "X Axis",
-    y: "Y Axis"
-  },
-  labelNames: [],
-  tickInterval: 10,
-  title: {
-    name: "My Chart",
-    fontSize: 11,
-    fontColour: "blue"
-  }
-};
+import Options from "./Options.js";
 
 /**
  * Creates a unique ID based on Math.random. To be used for generating CSS targeting a single element.
@@ -43,7 +25,7 @@ function importJQuery() {
 /**
  * Creates the HTML for a chart based on the data passed in, as well as the options.
  * @param {number[]} data
- * @param {Object} options
+ * @param {Options} options
  * @returns {Element} div element of the exterior bar chart
  */
 function createChart(data, options) {
@@ -65,7 +47,7 @@ function createChart(data, options) {
 /**
  *
  * @param {Element} chartDiv
- * @param {Object} options
+ * @param {Options} options
  * @returns
  */
 function generateCSS(chartDiv, options) {
@@ -101,16 +83,15 @@ function generateCSS(chartDiv, options) {
 /**
  * Render a bar chart horizontally, into the element passed as a parameter, using values from data, and height/width from options.
  * @param {number[]} data
- * @param {Object} options
+ * @param {Objet} options
  * @param {Element} element
  */
-function drawBarChart(data, options = defaultOptions, element) {
+export function drawBarChart(data, options, element) {
   if (!window.jQuery) {
     importJQuery();
   }
-  for (const opt in options) {
-    defaultOptions[opt] = options[opt];
-  }
+
+  let defaultOptions = new Options(options);
 
   let chartHTML = createChart(data, defaultOptions);
   document.getElementsByTagName("HEAD")[0].appendChild(generateCSS(chartHTML, defaultOptions));
