@@ -29,8 +29,11 @@ function importJQuery() {
  * @returns {Element} div element of the exterior bar chart
  */
 function createChart(data, options) {
+  const containerDiv = document.createElement("div");
+  containerDiv.id = uid();
+
   const outterDiv = document.createElement("div");
-  outterDiv.id = uid();
+  outterDiv.className = "table";
 
   for (const value of data) {
     const newBar = document.createElement("div");
@@ -44,20 +47,23 @@ function createChart(data, options) {
     outterDiv.insertAdjacentElement("beforeend", newBar);
   }
 
-  return outterDiv;
+  containerDiv.appendChild(outterDiv);
+
+  return containerDiv;
 }
 
 /**
  *
- * @param {Element} chartDiv
+ * @param {Element} containerDiv
  * @param {Options} options
  * @returns
  */
-function generateCSS(data, chartDiv, options) {
-  let chartCSS = document.createElement("style");
+function generateCSS(data, containerDiv, options) {
+  const chartCSS = document.createElement("style");
+  const id = containerDiv.id;
 
   chartCSS.innerHTML += `
-  #${chartDiv.id} {
+  #${id} > .table {
     width: ${options.width};
     height: ${options.height};
     margin: auto;
@@ -67,23 +73,31 @@ function generateCSS(data, chartDiv, options) {
     display: flex;
     flex-direction: row;
   }
-  #${chartDiv.id} > .bar {
+  #${id} > .table > .bar {
     width: calc(${options.width}/${data.length});
     background: ${options.barColour};
     text-align: ${options.valuePosition};
     border: 1px solid;
+    animation: grow 2s forwards;
+    margin-left: calc(${options.barSpacing}/2);
+    margin-right: calc(${options.barSpacing}/2);
     align-self: flex-end;
     display: flex;
     align-items: ${options.valuePosition};
   }
-  #${chartDiv.id} > .bar > .label {
+  #${id} > .table > .bar > .label {
     all: unset;
     color: white;
     flex: auto;
   }
+  @keyframes grow {
+    0% {
+      height: 0;
+    }
+  }
   `;
 
-  for (const [i, bar] of chartDiv.querySelectorAll(".bar").entries()) {
+  for (const [i, bar] of containerDiv.querySelectorAll(".bar").entries()) {
     bar.style = `height: ${bar.firstChild.textContent}em;`;
   }
 
@@ -101,11 +115,12 @@ export function drawBarChart(data, options, element) {
     importJQuery();
   }
   window.onload = () => {
-    let defaultOptions = new Options(options);
+    const defaultOptions = new Options(options);
 
-    let chartHTML = createChart(data, defaultOptions);
-    jQuery("head").append(generateCSS(data, chartHTML, defaultOptions));
+    const chartContainer = createChart(data, defaultOptions);
+    const style = generateCSS(data, chartContainer, defaultOptions);
+    jQuery("head").append(style);
 
-    element.insertAdjacentElement("beforeend", chartHTML);
+    element.insertAdjacentElement("beforeend", chartContainer);
   };
 }
