@@ -9,5 +9,6 @@ module.exports = {
       name: 'barChart',
       type: 'umd'
     }
-  }
+  },
+  mode: "development"
 };
